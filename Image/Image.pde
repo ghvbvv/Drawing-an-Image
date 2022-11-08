@@ -4,11 +4,12 @@
 int appWidth, appHeight;
 float smallerDimension, largerDimension;
 Boolean widthLarger=false, heightLarger=true;
+float imageWidthRatio=0.0, imageHeightRatio=0.0;
 float imageBackgroundX, imageBackgroundY, imageBackgroundWidth, imageBackgroundHeight;
 PImage pic;
 Boolean nightMode=false;
 //
-size(500, 500); //Landscape
+size(1000, 800); //Landscape
 //Copy Display Algoritm from Hello World
 appWidth = width; 
 appHeight = height;
@@ -19,22 +20,46 @@ int picWidth = 880;
 int picHeight = 550;
 //Image Orientation: Landscape, portrait, square
 if ( picWidth >= picHeight ) { //True if Landscape or Square
-  LargerDimension = picWidth;
+  largerDimension = picWidth;
   smallerDimension = picHeight;
-  heightLarger = true;
+  widthLarger = true;
 } else { //Fales if Portrait
-  LargerDimension = picWidth;
+  largerDimension = picWidth;
   smallerDimension = picHeight;
   heightLarger = true;
 }
+/* Older algorithm
+ if( widthLarger == true ) imageWidthRatio = largerDimension / largerDimension;
+ if( widthLarger == true ) imageHeightRatio = smallerDimension / largerDimension;
+ if( heightLarger == true ) imageWidthRatio = smallerDimension / largerDimension;
+ if( heightLarger == true ) imageHeightRatio = largerDimension / largerDimension;
+ */
+float picWidthAdjusted=0.0, picHeightAdjusted=0.0;
+//BeterImage Stretch Algorithm
+if ( appWidth >= picWidth) {
+  picWidthAdjusted = picWidth;
+ if( widthLarger == true ) imageWidthRatio = largerDimension / largerDimension;
+ if( widthLarger == true ) imageWidthRatio = smallerDimension / largerDimension;
+} else {
+  //Images smaller than CANVAS needs separte algorithm
+}
+if ( appWidth >= picWidth) {
+  picWidthAdjusted = picWidth;
+ if( widthLarger == true ) imageHeightRatio = largerDimension / largerDimension;
+ if( widthLarger == true ) imageHeightRatio = smallerDimension / largerDimension;
+} else {
+  //Images smaller than CANVAS needs separte algorithm
+}
+println (appWidth, picWidth, picWidthAdjusted);
+println (appHeight, picHeight, picHeightAdjusted);
+picWidthAdjusted = appWidth * imageWidthRatio;
+picHeightAdjusted = appHeight * imageHeightRatio;
 //
-if( widthLarger == true ) imageWidthRatio = LargerDimension / LargerDimension;
-if( widthLarger == true ) imageHeightRatio = smallerDimension / LargerDimension;
-if( heightLarger == true ) imageWidthRatio = smallerDimension / LargerDimension;
-if( heightLarger == true ) imageHeightRatio = LargerDimension / LargerDimension;
-//
-picWidthAdjusted = picWidth * imageWidthRatio;
-picHeightAdjusted = picHeight * imageHeightRatio;
+//Developer verified varibles
+println (appWidth, picWidth, picWidthAdjusted);
+println (appHeight, picHeight, picHeightAdjusted);
+picWidthAdjusted = appWidth * imageWidthRatio;
+picHeightAdjusted = appHeight * imageHeightRatio;
 //
 //Population
 pic = loadImage("../Images Used/edmonton.jpg");
