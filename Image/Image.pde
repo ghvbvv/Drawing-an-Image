@@ -5,12 +5,17 @@ int appWidth, appHeight;
 float smallerDimension, largerDimension;
 Boolean widthLarger=false, heightLarger=true;
 float picWidthAdjusted=0.0, picHeightAdjusted=0.0;
-float imageBackgroundX, imageBackgroundY, imageBackgroundWidth, imageBackgroundHeight;
-PImage pic;
+float backgroundImageX, backgroundImageY, backgroundImageWidth, backgroundImageHeight;
+PImage pic, pic2, pic3;
 Boolean nightMode=false;
+int topHalfX, topHalfY, topHalfWidth, topHalfHeight;
+int bottomHalfX, bottomHalfY, bottomHalfWidth, bottomHalfHeight;
+int tintDayMode=255, tintDayModeOpacity=55;
+int tintRed=64, tintGreen=64, tintBlue=40, tintNightModeOpacity=85;
 //
 void setup() 
 {
+  size(1000, 800); //Landscape
   //Copy Display Algorithm from Hello World
   appWidth = width;
   appHeight = height;
@@ -18,8 +23,12 @@ void setup()
   //Image Dimensions for Aspect Ratio
   //edmonton.jpg
   //Note: Dimensions are found in the image file / Right Click / Properties / Details
-  int picWidth = 800;
-  int picHeight = 600;
+  int picWidth = 850;
+  int picHeight = 650;
+  int pic2Width = ; //Landscape
+  int pic2Height = ; //Landscape
+  //int pic3Width = ;
+  //int pic3Height = ;
   //
   float smallerDimension, largerDimension;
   //Image Orientation: Landscape, Portrait, Square
@@ -41,11 +50,11 @@ void setup()
     //
     if ( widthLarger == true ) imageWidthRatio = largerDimension / largerDimension;
     //
-    if ( appHeight >= picHeightAdjusted ) {
+    if ( appHeight >= picHeight ) {
       if ( widthLarger == true ) imageHeightRatio = smallerDimension / largerDimension;
-      picHeightAdjusted = appWidthAdjusted * imageHeightRatio;
-      if(appHeight < picHeightAdjusted ) {
-        println("STOP: image is too big for CANVAS")
+      picHeightAdjusted = picWidthAdjusted * imageHeightRatio;
+      if (appHeight < picHeightAdjusted ) {
+        println("STOP: image is too big for CANVAS");
         exit(); //stops any further use of APP
         //Remember: goal is 1:1 aspect ratio
       }
@@ -56,7 +65,7 @@ void setup()
     //Image smaller than CANVAS needs separate algorithm
   }
   //
-  //Verifying Varibles Values
+  //Verifying Variable Values after algoroithm
   println("App Width:", appWidth, " and App Height:", appHeight);
   println("Larger Image dimension is:", largerDimension);
   println("Image dimensions are:", picWidth, picHeight);
@@ -64,80 +73,56 @@ void setup()
   //
   //Population
   pic = loadImage("../Images Used/edmonton.jpg");
-  imageBackgroundX = appWidth*0;
-  imageBackgroundY = appHeight*0;
-  imageBackgroundWidth = appWidth-1;
-  imageBackgroundHeight = appHeight-1;
+  backgroundImageX = appWidth*0;
+  backgroundImageY = appHeight*0;
+  backgroundImageWidth = appWidth-1;
+  backgroundImageHeight = appHeight-1;
+  topHalfX = appWidth * 1/4; 
+  topHalfY = appHeight * 1/20;
+  topHalfWidth = appWidth * 1/2;
+  topHalfHeight = appHeight *8/20;
+  bottomHalfX = appWidth * 1/2; 
+  bottomHalfY = appHeight * 2/4;
+  bottomHalfWidth = appWidth * 1/4;
+  bottomHalfHeight = appHeight * 4/20;
   //
-  //Rectangle Layout and Image drawing to CANVAS
-  //rect(imageBackgroundX, imageBackgroundY, imageBackgroundWidth, imageBackgroundHeight);
+  //Rectangular Layout and Image Drawing to CANVAS
+  rect( backgroundImageX, backgroundImageY, backgroundImageWidth, backgroundImageHeight );
+  rect( topHalfX, topHalfY, topHalfWidth, topHalfHeight ); //Top Half
+  rect( bottomHalfX, bottomHalfY, bottomHalfWidth, bottomHalfHeight ); //Bottom Hlaf
   //
   //Background Image must be single executed code
-  //image(pic, imageBackgroundX, imageBackgroundY, imageBackgroundWidth, imageBackgroundHeight);
-  image(pic, imageBackgroundX, imageBackgroundY, imageBackgroundWidth, imageBackgroundHeight);
-}// End setup
+  if ( nightMode == false ) tint(tintDayMode, tintDayModeOpacity); //Gray Scale: use 1/2 tint value for white (i.e. 128/256=1/2)
+  if ( nightMode == true ) tint(tintRed, tintGreen, tintBlue, tintNightModeOpacity); //RGB: Night Mode
+  //image( pic, backgroundImageX, backgroundImageY, backgroundImageWidth, backgroundImageHeight);
+  image( pic, backgroundImageX, backgroundImageY, picWidthAdjusted, picHeightAdjusted);
+  //
+}//End setup
 //
 void draw() 
 {
-  tint(255, 128); //Gray Scale: use 1/2 tint value for white (i.e. 128/256=1/2)
-  //if (nightMode == true) tint(64, 64, 40); //RGB: Night Mode
-  
-}//End draw
+  image( pic2,topHalfX, topHalfY, topHalfWidth, topHalfHeight );
+  //image( pic3, bottomHalfX, bottomHalfY, bottomHalfWidth, bottomHalfHeight );
+}
+//End draw 
 void keyPressed() {
 }//End keyPressed
 void mousePressed() {
-  if (mouseButton == LEFT) nightMode = true;
-  if (mouseButton == RIGHT) nightMode = false;
+  //
+  //Mouse Pressed will control background image 
+  if (mouseButton == LEFT) {
+    nightMode = true;
+    rect( backgroundImageX, backgroundImageY, backgroundImageWidth, backgroundImageHeight );
+    tint(tintDayMode, tintDayModeOpacity); //Gray Scale: use 1/2 tint value for white (i.e. 128/256=1/2)
+    image( pic, backgroundImageX, backgroundImageY, picWidthAdjusted, picHeightAdjusted);
+    //
+  }
+  if (mouseButton == RIGHT) {
+    nightMode = false;
+    rect( backgroundImageX, backgroundImageY, backgroundImageWidth, backgroundImageHeight );
+    tint(tintRed, tintGreen, tintBlue, tintNightModeOpacity); //RGB: Night Mode
+    image( pic, backgroundImageX, backgroundImageY, picWidthAdjusted, picHeightAdjusted);
+  }
 }//End mousePressed
 //
-size(1000, 800); //Landscape
-//Copy Display Algoritm from Hello World
-appWidth = width; 
-appHeight = height;
-//
-//Apect Ratio Calculations
-//edmonton.jpg
-int picWidth = 880;
-int picHeight = 550;
-
-if ( picWidth >= picHeight ) { //True if Landscape or Square
-  largerDimension = picWidth;
-  smallerDimension = picHeight;
-  widthLarger = true;
-} else { //Fales if Portrait
-  largerDimension = picWidth;
-  smallerDimension = picHeight;
-  heightLarger = true;
-}
-float picWidthAdjusted=0.0, picHeightAdjusted=0.0;
-//BeterImage Stretch Algorithm
-if ( appWidth >= picWidth) {
-  picWidthAdjusted = picWidth;
-  if ( widthLarger == true ) imageWidthRatio = largerDimension / largerDimension;
-  if ( widthLarger == true ) imageWidthRatio = smallerDimension / largerDimension;
-} else {
-  //Images smaller than CANVAS needs separte algorithm
-}
-if ( appWidth >= picWidth) {
-  picWidthAdjusted = picWidth;
-  if ( widthLarger == true ) imageHeightRatio = largerDimension / largerDimension;
-  if ( widthLarger == true ) imageHeightRatio = smallerDimension / largerDimension;
-} else {
-  //Images smaller than CANVAS needs separte algorithm
-}
-println (appWidth, picWidth, picWidthAdjusted);
-println (appHeight, picHeight, picHeightAdjusted);
-picWidthAdjusted = appWidth * imageWidthRatio;
-picHeightAdjusted = appHeight * imageHeightRatio;
-//
-//Developer verified varibles
-println (appWidth, picWidth, picWidthAdjusted);
-println (appHeight, picHeight, picHeightAdjusted);
-picWidthAdjusted = appWidth * imageWidthRatio;
-picHeightAdjusted = appHeight * imageHeightRatio;
-//
-
-if (nightMode == false) tint(255, 128); //Gray Scale: use 1/2 tint value for white (i.e. 128/256=1/2)
-if (nightMode == true) tint(64, 64, 40); //RGB: Night Mode
-//tint(0, 0); //Gray Scale: use 1/2 tint value for white (i.e. 128/256=1/2)
-//tint(64, 64, 40); //RGB: Night Mode
+//End Main Program
